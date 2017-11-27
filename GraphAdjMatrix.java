@@ -1,10 +1,15 @@
-
+import java.util.Stack;
 
 public class GraphAdjMatrix implements Graph {
 
 	int[][] graph;
 	int size;
 	
+	/**
+	 * Constructor
+	 * @param size
+	 * 			number of nodes in the graph
+	 */
 	public GraphAdjMatrix(int size) {
 		this.size = size;
 		graph = new int[size][size];
@@ -18,122 +23,56 @@ public class GraphAdjMatrix implements Graph {
 
 	@Override
 	public void topologicalSort() {
-		boolean[] visited = new boolean[size];
+		Stack<Integer> s = new Stack<Integer>();
+		int v, n;
+		int[] numIncident = new int[size];
+		int[] order = new int[size];
 		
-		for(int i = 0; i < visited.length ; i++){
-			visited[i] = false; //set the default status of visited list
+		for(v = 0; v <size; v++){
+			numIncident[v] = 0;
 		}
-
-		for(int j = 0; j < size ; j ++){
-			if(visited[j] == false){
-				dfs(j, visited);
+		for(v =0; v <size; v++){
+			int[] thisNeighbors = neighbors(v);
+			for(int i=0; i < thisNeighbors.length; i++){
+				int dest = thisNeighbors[i];
+				numIncident[dest]++;
 			}
 		}
 		
-	}
-
-	/**
-	 * Depth-first
-	 * @param vertex
-	 * @param visited
-	 */
-	private void dfs(int vertex, boolean[] visited){
-		ArrayQueue queue = new ArrayQueue();
-		queue.enqueue(vertex);
-		visited[vertex] = true;
+		for(v = 0; v <size; v++){
+			if(numIncident[v] == 0){
+				s.push(v);
+			}
+		}
 		
-		while(!queue.empty()){
-			int u = (Integer) queue.dequeue();//current item to remove from queue
-		//	System.out.print(+u+" "); //TODO
-			
-			int[] thisNbr = neighbors(u);
-			for(int k=0;k < thisNbr.length ; k ++ ){
+		if(s.empty()){
+			/*not a single node has precedent node*/
+			System.out.println("This graph is cyclic!");
+			v=0;
+			numIncident[v] = 0;
+			s.push(v);
+		}
+		
+		n = 0;
+		while(!s.empty()){
+			v = s.pop();
+			System.out.print(v+" ");
+			if(n+1 < order.length){
+				order[n++] = v;
+			}
+			int[] thisNeighbors = neighbors(v);
+			for(int i=0; i < thisNeighbors.length; i++){
+				int dest = thisNeighbors[i];
+				numIncident[dest]--;
+				if(numIncident[dest] == 0){
+					s.push(dest);		
+				}
+			}
+
+		}
 				
-				int v = thisNbr[k]; // every neighbor of given vertex
-				if(visited[v] == false){
-					visited[v] = true;
-					queue.enqueue(v); // add this neighbor into queue
-				}
-			}
-			
-		}
-		printVertexWay();
 	}
-	
-	private void printVertexWay(){
-		
-		boolean[] printed = new boolean[size];
-		for(int i=0; i < size ; i++){
-			printed[i] = false;
-		}
-		
-		int v = 0;
-		
-		while(printed[v] == false){ //TODO condition to change
-			printed[v] = true;
-			
-		System.out.println(v+ "~ ");
-			int w = deepestDirection(v);
-			if(v != w ){
-				v = w;
-			}else{
-				for(int i=0; i < size ; i++){
-					if(v!=i && printed[i]==false ){
-						v = i;
-						
-					}
-				}
-			}
-		}
-	
-	}
-	
-	private int deepestDirection(int vertex){
-		int deepestVertex=-1; //position of vertex
-		int deepesttWay = 0; //number of turning
-		int[] neighborArr = neighbors(vertex);
-		
-		for(int i = 0; i < neighborArr.length ; i++){
-			if(deepestNum(vertex, 0, vertex) > deepesttWay){
-				deepestVertex = neighborArr[i]; //the vertex with deepest way to go
-			}
-			
-		}
-		if(deepestVertex == -1){
-			deepestVertex = vertex;
-		}
-		return deepestVertex;
-	}
-	
-	/**
-	 * For one vertex, how far can it go through the graph
-	 * @param vertex
-	 * 				given vertex as starting point
-	 * @param turning
-	 * @param endpoint
-	 * @return
-	 */
-	private int deepestNum(int vertex, int turning, int endpoint){
-		int turningNum = turning;
-			
-			int[] nbr = neighbors(vertex);
-			if(nbr.length!= 0 ){
-				turningNum ++;
-				for(int i=0; i < nbr.length ; i++){
-					
-					if(nbr[i] == endpoint){
-						//it is going through the graph cyclically 
-						System.out.println(vertex+ ": "+ turningNum);
-						return turningNum;
-					}
-					turningNum = turningNum + deepestNum(nbr[i], turning, endpoint);
-	
-				}
-			
-			
-			}
-		return turningNum;
-	}
+
 	
 	
 	
@@ -157,8 +96,6 @@ public class GraphAdjMatrix implements Graph {
 		return neighbor;
 	}
 
-	
-	
 	
 	
 }
