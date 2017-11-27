@@ -61,55 +61,77 @@ public class GraphAdjMatrix implements Graph {
 	}
 	
 	private void printVertexWay(){
-		int v = 0;
+		
 		boolean[] printed = new boolean[size];
 		for(int i=0; i < size ; i++){
 			printed[i] = false;
 		}
-		System.out.print(0+ " ");
-		while(deepestDirection(v) != -1){
-			System.out.print(deepestDirection(v)+ " ");
-			v = deepestDirection(v);
+		
+		int v = 0;
+		
+		while(printed[v] == false){ //TODO condition to change
 			printed[v] = true;
+			
+		System.out.println(v+ "~ ");
+			int w = deepestDirection(v);
+			if(v != w ){
+				v = w;
+			}else{
+				for(int i=0; i < size ; i++){
+					if(v!=i && printed[i]==false ){
+						v = i;
+						
+					}
+				}
+			}
 		}
-		System.out.println(" ");
-		
-		
+	
 	}
 	
 	private int deepestDirection(int vertex){
 		int deepestVertex=-1; //position of vertex
-		int deepesttWay = -1; //number of turning
+		int deepesttWay = 0; //number of turning
 		int[] neighborArr = neighbors(vertex);
 		
 		for(int i = 0; i < neighborArr.length ; i++){
-			if(deepestNum(vertex, 0) > deepesttWay){
+			if(deepestNum(vertex, 0, vertex) > deepesttWay){
 				deepestVertex = neighborArr[i]; //the vertex with deepest way to go
 			}
 			
 		}
+		if(deepestVertex == -1){
+			deepestVertex = vertex;
+		}
 		return deepestVertex;
 	}
 	
-	private int deepestNum(int vertex, int turning){
+	/**
+	 * For one vertex, how far can it go through the graph
+	 * @param vertex
+	 * 				given vertex as starting point
+	 * @param turning
+	 * @param endpoint
+	 * @return
+	 */
+	private int deepestNum(int vertex, int turning, int endpoint){
 		int turningNum = turning;
-		if(hasWayIn(vertex)){
+			
 			int[] nbr = neighbors(vertex);
 			if(nbr.length!= 0 ){
 				turningNum ++;
 				for(int i=0; i < nbr.length ; i++){
-				
-					if(!twoWay(vertex, nbr[i])){
-						turningNum = turningNum + deepestNum(nbr[i], turning);
+					
+					if(nbr[i] == endpoint){
+						//it is going through the graph cyclically 
+						System.out.println(vertex+ ": "+ turningNum);
+						return turningNum;
 					}
+					turningNum = turningNum + deepestNum(nbr[i], turning, endpoint);
+	
 				}
-			}
 			
-		}
-		
-		if(turningNum > size){
-			System.out.println("this is cycling!!");
-		}
+			
+			}
 		return turningNum;
 	}
 	
@@ -136,27 +158,7 @@ public class GraphAdjMatrix implements Graph {
 	}
 
 	
-	private boolean hasWayIn(int vertex){
-		boolean wayIn = false;
-		
-		
-		for(int i =0; i < size ; i ++){
-			if(graph[vertex][i] ==1){
-				wayIn = true;
-			}
-		}
-		
-		return wayIn;
-	}
 	
-	private boolean twoWay(int v1, int v2){
-		boolean both = false;
-		
-		if(graph[v1][v2] == 1 && graph[v2][v1] == 1){
-			both = true;
-		}
-		
-		return both;
-	}
+	
 	
 }
