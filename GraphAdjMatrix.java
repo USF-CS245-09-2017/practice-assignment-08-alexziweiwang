@@ -27,6 +27,7 @@ public class GraphAdjMatrix implements Graph {
 		int v, n;
 		int[] numIncident = new int[size];
 		int[] order = new int[size];
+		int printed = 0;
 		
 		for(v = 0; v <size; v++){
 			numIncident[v] = 0;
@@ -57,6 +58,7 @@ public class GraphAdjMatrix implements Graph {
 		while(!s.empty()){
 			v = s.pop();
 			System.out.print(v+" ");
+			printed ++;
 			if(n+1 < order.length){
 				order[n++] = v;
 			}
@@ -71,6 +73,11 @@ public class GraphAdjMatrix implements Graph {
 
 		}
 				
+		if(printed< size){
+			System.out.println("This graph is cyclic!");	
+		}
+		
+		System.out.println("");
 	}
 
 	
