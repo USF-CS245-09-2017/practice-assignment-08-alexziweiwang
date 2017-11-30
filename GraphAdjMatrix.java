@@ -72,7 +72,6 @@ public class GraphAdjMatrix implements Graph {
 			int[] thisNeighbors = neighbors(v);
 			for(int i=0; i < thisNeighbors.length; i++){
 				/*for every vertex of v's neighbor(destination)*/
-				
 				int dest = thisNeighbors[i];//current destination
 				numIncident[dest]--;//precedent of dest minus one(v)
 				if(numIncident[dest] == 0){//if no precedent for dest
