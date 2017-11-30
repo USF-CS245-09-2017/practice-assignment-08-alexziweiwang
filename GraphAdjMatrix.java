@@ -51,8 +51,9 @@ public class GraphAdjMatrix implements Graph {
 		/*check the number of precedent vertices of the vertex*/
 		for(v =0; v <size; v++){
 			int[] thisNeighbors = neighbors(v);
+			int dest;
 			for(int i=0; i < thisNeighbors.length; i++){
-				int dest = thisNeighbors[i];
+				dest = thisNeighbors[i];
 				numIncident[dest]++;
 			}
 		}
@@ -70,9 +71,10 @@ public class GraphAdjMatrix implements Graph {
 			printed ++; //keep track of how many vertices are printed
 			
 			int[] thisNeighbors = neighbors(v);
+			int dest;
 			for(int i=0; i < thisNeighbors.length; i++){
 				/*for every vertex of v's neighbor(destination)*/
-				int dest = thisNeighbors[i];//current destination
+				dest = thisNeighbors[i];//current destination
 				numIncident[dest]--;//precedent of dest minus one(v)
 				if(numIncident[dest] == 0){//if no precedent for dest
 					s.push(dest);		
@@ -100,8 +102,9 @@ public class GraphAdjMatrix implements Graph {
 	public int[] neighbors(int vertex) {
 		int[] nbr = new int[size];
 		int index = 0;
+		int thisVet;
 		for(int i=0; i < size ; i++){
-			int thisVet = graph[vertex][i]; //position in the matrix
+			thisVet = graph[vertex][i]; //position in the matrix
 			if(thisVet==1 && i != vertex){
 				nbr[index] = i;
 				index++;		
