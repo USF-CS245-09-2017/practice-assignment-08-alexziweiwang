@@ -19,7 +19,6 @@ public class GraphAdjMatrix implements Graph {
 		size = vertices; 
 		/*create a graph based on given number of vertex*/
 		graph = new int[size][size];
-		
 	}
 
 	
@@ -33,7 +32,10 @@ public class GraphAdjMatrix implements Graph {
 
 	
 	/**
-	 * Apply topological sort and print all the vertices in such order
+	 * Apply topological sort and print all the vertices in 
+	 * order that if each directed edges(v1, v2) from vertex v1 to vertex v2,
+	 * v1 comes before v2 in the ordering.
+	 * Will indicate user when there are cycles.
 	 */
 	@Override
 	public void topologicalSort() {
@@ -61,18 +63,7 @@ public class GraphAdjMatrix implements Graph {
 				s.push(v);
 			}
 		}
-		
-		if(s.empty()){
-			/*case that not a single vertex has precedent vertex*/
-			System.out.println("This graph is cyclic! Printing probably partially...");
 			
-			/*at least show vertices related with vertex 0*/
-			v=0;
-			numIncident[v] = 0;
-			s.push(v);
-		}
-		
-		
 		while(!s.empty()){
 			v = s.pop();
 			System.out.print(v+" ");
@@ -91,13 +82,14 @@ public class GraphAdjMatrix implements Graph {
 
 		}
 				
+		System.out.println();
 		if(printed< size){
-			/*case that there are still vertex unprinted*/
+			/*there are still vertex unprinted*/
 			/*because nowhere to start within a cycle*/
 			System.out.println("This graph is cyclic!");	
 		}
 		
-		System.out.println("");
+		
 	}
 
 	
